@@ -1,126 +1,31 @@
-/* eslint-disable max-len */
-
-/*
-  Você é responsável por escrever o código do sistema de pedidos de um restaurante. Deve ser possível, através desse sistema, 
-  cadastrar um menu. Dado que um menu foi cadastrado, o sistema deve disponibilizar um objeto através do qual se consegue:
-  - ler o menu cadastrado; 
-  - fazer pedidos;
-  - verificar o que foi pedido;
-  - somar o valor da conta.
-
-  A estrutura deste código e deste objeto já foi definida e você irá implementá-la.
-  Abaixo você verá uma série de testes e passos que devem ser, NECESSARIAMENTE, feitos em ordem para o bom desenvolvimento do sistema. 
-  Eles guiarão você pelo desenvolvimento.
-
-  Parâmetros:
-  - Um objeto. Exemplos: { food: {'coxinha': 3.9, 'sopa': 9.9}, drink: {'agua': 3.9, 'cerveja': 6.9} }.
-  Comportamento:
-
-  const meuRestaurante = createMenu({ food: {'coxinha': 3.9, 'sopa': 9.9}, drink: {'agua': 3.9, 'cerveja': 6.9} }).
-
-  meuRestaurante.fetchMenu() // Retorno: { food: {'coxinha': 3.9, 'sopa': 9.9}, drink: {'agua': 3.9, 'cerveja': 6.9} }
-
-  meuRestaurante.order('coxinha') // Retorno: undefined
-
-  meuRestaurante.consumption // Retorno: ['coxinha']
-
-  meuRestaurante.pay() // Retorno: 3.9
-
-  Uma função createMenu retorna um objeto com as seguintes características:
-  - Uma chave `fetchMenu` retorna o objeto que a função `createMenu` recebe por parâmetro. O menu tem sempre duas chaves, `food` e `drink`, no seguinte formato:
-
-  const meuRestaurante = createMenu({
-    food: {'coxinha': 3.90, 'sanduiche', 9.90},
-    drinks: {'agua': 3.90, 'cerveja': 6.90}
-  });
-
-  meuRestaurante.fetchMenu() // Retorno: Menu acima
-
-  - Uma chave `consumption` que contém um array de strings, com cada string sendo a chave de um pedido. Por exemplo: ['coxinha', 'cerveja']
-
-  - Uma chave `order` que tem uma função que, recebida uma string como parâmetro, adiciona essa string à lista salva em `consumption`.
-
-  - Uma chave `pay` que, quando chamada, invoca uma função que soma o valor de todos os pedidos e dá o preço com acréscimo de 10%.
-
-  IMPORTANTE: COMECE PELO TESTE 1 DO ARQUIVO `tests/restaurant.spec.js` E NÃO PELO PASSO 1 DESTE ARQUIVO!
-*/
-
-// PASSO 1: Crie uma função `createMenu()` que, dado um objeto passado por parâmetro, retorna um objeto com o seguinte formato: { fetchMenu: () => objetoPassadoPorParametro }.
-//
-// Agora faça o TESTE 4 no arquivo `tests/restaurant.spec.js`.
-
-//------------------------------------------------------------------------------------------
-
-// PASSO 2: Adicione ao objeto retornado por `createMenu` uma chave `consumption` que, como valor inicial, tem um array vazio.
-//
-// Agora faça o TESTE 5 no arquivo `tests/restaurant.spec.js`.
-
-//------------------------------------------------------------------------------------------
-
-// PASSO 3: Crie uma função, separada da função `createMenu()`, que, dada uma string recebida por parâmetro, 
-// adiciona essa string ao array de `objetoRetornado.consumption`. Adicione essa função à chave `order`.
-// DICA: para criar isso, você pode: 
-// - Definir a função `createMenu()`
-// - Definir o objeto que a `createMenu()` retorna, mas separadamente 
-// - E, depois, definir a função que será atribuída a `order`.
-// ```
-// const restaurant = {}
-//
-// const createMenu = (myMenu) => // Lógica que edita o objeto `restaurant`
-//
-// const orderFromMenu = (request) => // Lógica que adiciona à chave `consumption` de `restaurant` a string recebida no parâmetro `request`. 
-// // Essa função deve ser associada à chave `order` de `restaurant`
-// ```
-// Agora faça o TESTE 6 no arquivo `tests/restaurant.spec.js`.
-
-//------------------------------------------------------------------------------------------
-
-// PASSO 4: Adicione ao objeto retornado por `createMenu()` uma chave `pay` com uma função que varre todo os itens de `objetoRetornado.consumption`, 
-// soma o preço de todos checando-os no menu e retorna o valor somado acrescido de 10%. DICA: para isso, 
-// você precisará varrer tanto o objeto da chave `food` quanto o objeto da chave `drink`.
-
-// const menu = {
-//   food: {
-//     coxinha: 3.9,
-//     sopa: 9.9,
-//     Lasanha: 20,
-//   },
-//   drink: {
-//     agua: 3.9,
-//     cerveja: 6.9,
-//   },
-// };
-
-function verifica(e) { // recebe o objeto
+function verifica(e) {
   let sum = 0;
-  for (let iten of e.consumption) { // verifica os pedido, array pedidos
-    if (Object.keys(e.fetchMenu().food).includes(`${iten}`)) { // verifica se existe no outro objeto
+  for (let iten of e.consumption) {
+    if (Object.keys(e.fetchMenu().food).includes(`${iten}`)) {
       sum += e.fetchMenu().food[`${iten}`];
     }
-    if (Object.keys(e.fetchMenu().drink).includes(`${iten}`)) { // objeto principal, de entratada
-      sum += e.fetchMenu().drink[`${iten}`]; // Funciona sem aspas.
+    if (Object.keys(e.fetchMenu().drink).includes(`${iten}`)) {
+      sum += e.fetchMenu().drink[`${iten}`];
     }
   }
   return sum;
 }
 
-// consumo = Object.keys(); //  // Retorno: ['coxinha']
-// pay = Object.values(); // Retorno: 3.9
 const createMenu = (objetoMenu) => {
   const objeto = {
-    fetchMenu: () => objetoMenu, // retorna o proprio objeto como entrada
-    consumption: [], // valor inical array vazio, onde armazena pedido;
-    order: (pedido) => objeto.consumption.push(pedido), // funcao que adiciona string ao array da linha superior
-    // Mude para a verificao seja no pedido, order, nao no pagamento
-    pay: () => { // recebe um objeto e o array, percorre, para somar
+    fetchMenu: () => objetoMenu,
+    consumption: [],
+    order: (pedido) => objeto.consumption.push(pedido),
+    pay: () => {
       const valor = verifica(objeto);
       if (valor !== 0) {
-        return (valor * 1.1).toFixed(2); // Referencias <https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places> Arredonda 2 números p/ casa decimal.
+        return (valor * 1.1).toFixed(2);
+        // Referencias <https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places> Arredonda 2 números p/ casa decimal.
       }
-      return undefined; // Se nao somar nada, retorna, nao definido
+      return undefined;
     },
   };
-  return objeto; // adicionado depois de testar no console, ele só retorna se tiver returne
+  return objeto;
 };
 
 module.exports = createMenu;
